@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI IT Support Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+        .chatbox {
+            width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #chat {
+            height: 250px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 75%;
+            padding: 8px;
+        }
+        button {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chatbox">
+    <h3>AI IT Support Chatbot</h3>
+    <div id="chat"></div>
+
+    <input type="text" id="userInput" placeholder="Type your issue..." />
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    const apiUrl = "https://2w19qf9eri.execute-api.us-east-1.amazonaws.com/prod/chat";
+
+    function sendMessage() {
+        const input = document.getElementById("userInput");
+        const message = input.value;
+
+        if (message === "") return;
+
+        const chat = document.getElementById("chat");
+        chat.innerHTML += "<b>You:</b> " + message + "<br>";
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            chat.innerHTML += "<b>Bot:</b> " + data.reply + "<br><br>";
+            chat.scrollTop = chat.scrollHeight;
+        })
+        .catch(error => {
+            chat.innerHTML += "<b>Error:</b> Could not reach chatbot<br>";
+        });
+
+        input.value = "";
+    }
+</script>
+
+</body>
+</html>
